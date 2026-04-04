@@ -1,17 +1,22 @@
 cmake_minimum_required(VERSION 3.23)
 
-
 # TODO1: Implement MacroAppend
 macro(MacroAppend ListVar Value)
-
+  if(NOT DEFINED ${ListVar}
+     OR "${${ListVar}}" STREQUAL "")
+    set(${ListVar} "${Value}")
+  else()
+    set(${ListVar} "${${ListVar}};${Value}")
+  endif()
 endmacro()
 
 # TODO2: Call MacroAppend, then return the value from FuncAppend
 function(FuncAppend ListVar Value)
-
+  macroappend(${ListVar} ${Value})
+  set(${ListVar}
+      "${${ListVar}}"
+      PARENT_SCOPE)
 endfunction()
-
-
 
 # Testing for the above, final expected value is "Alpha;Beta;Gamma;Delta"
 if(SKIP_TESTS)
@@ -24,9 +29,9 @@ set(Expected "Alpha;Beta;Gamma;Delta")
 set(BeginList ${Original})
 set(EndList "Alpha")
 
-MacroAppend(BeginList "Delta")
+macroappend(BeginList "Delta")
 foreach(value IN LISTS BeginList)
-  MacroAppend(EndList ${value})
+  macroappend(EndList ${value})
 endforeach()
 
 if(BeginList STREQUAL Original)
@@ -40,9 +45,9 @@ endif()
 set(BeginList ${Original})
 set(EndList "Alpha")
 
-FuncAppend(BeginList "Delta")
+funcappend(BeginList "Delta")
 foreach(value IN LISTS BeginList)
-  FuncAppend(EndList ${value})
+  funcappend(EndList ${value})
 endforeach()
 
 if(BeginList STREQUAL Original)
@@ -55,18 +60,16 @@ endif()
 
 # Bonus Tests
 
-FuncAppend(UndefinedList "Test")
+funcappend(UndefinedList "Test")
 
 set(EmptyList "")
-FuncAppend(EmptyList "Test")
+funcappend(EmptyList "Test")
 
 set(FalseList "False")
-FuncAppend(FalseList "Test")
+funcappend(FalseList "Test")
 
-if(
-  (UndefinedList STREQUAL "Test") AND
-  (EmptyList STREQUAL "Test") AND
-  (FalseList STREQUAL "False;Test")
-)
+if((UndefinedList STREQUAL "Test")
+   AND (EmptyList STREQUAL "Test")
+   AND (FalseList STREQUAL "False;Test"))
   message("You implemented the empty list case, well done!")
 endif()
