@@ -1,2 +1,2 @@
-rm -rf build && cmake -B build -S .
-cmake --build build
+cmake -B build -S .
+cmake --build build --clean-first
