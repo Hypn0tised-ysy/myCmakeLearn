@@ -1,20 +1,27 @@
 cmake_minimum_required(VERSION 3.23)
 
-
 function(FilterFoo OutVar)
-# TODO3: Search all the variables in the argument list passed to FilterFoo,
-#        and place those containing "Foo" into the list named by "OutVar"
+  # TODO3: Search all the variables in the argument list passed to FilterFoo,
+  # and place those containing "Foo" into the list named by "OutVar"
+  foreach(item IN LISTS ARGN)
+    if(item MATCHES Foo)
+      list(APPEND ${OutVar} ${item})
+    endif()
 
-  set(${OutVar} ${${OutVar}} PARENT_SCOPE)
+  endforeach()
+
+  set(${OutVar}
+      ${${OutVar}}
+      PARENT_SCOPE)
 endfunction()
-
-
 
 # Testing for the above
 function(check_contains var)
   if(NOT var IN_LIST OutList)
     message(WARNING "OutList does not contain: ${var}")
-    set(Failed True PARENT_SCOPE)
+    set(Failed
+        True
+        PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -22,7 +29,9 @@ function(check_nonfoo)
   list(FILTER ARGN EXCLUDE REGEX Foo)
   if(NOT ARGN STREQUAL "")
     message(WARNING "OutList contains extra item(s): ${ARGN}")
-    set(Failed True PARENT_SCOPE)
+    set(Failed
+        True
+        PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -32,7 +41,7 @@ endif()
 
 set(InList FooBar BarBaz FooBaz BazBar QuxFoo BazQux)
 
-FilterFoo(OutList ${InList})
+filterfoo(OutList ${InList})
 
 if(NOT DEFINED OutList)
   message("FilterFoo unimplemented or does nothing")
