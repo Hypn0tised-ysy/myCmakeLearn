@@ -8,7 +8,6 @@ project(Tutorial)
 #        something like:
 #          "Build the Tutorial executable"
 option(TUTORIAL_BUILD_UTILITIES "Build the Tutorial executable" ON)
-
 # TODO2: Add a conditional statement around add_subdirectory(Tutorial). Only
 #        build the Tutorial target if TUTORIAL_BUILD_UTILITIES is ON (or
 #        otherwise truthy).

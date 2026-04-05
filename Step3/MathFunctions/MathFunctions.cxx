@@ -21,7 +21,7 @@ double mysqrt(double x)
     result = result + 0.5 * delta / result;
 
     // TODO7: Convert the print to use std::format
-    std::format("Computing sqrt of {} to be {}\n", x, result);
+    std::cout << std::format("Computing sqrt of {} to be {}\n", x, result);
   }
   return result;
 }
