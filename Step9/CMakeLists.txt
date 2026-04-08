@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 # TODO9: Add a VERSION parameter to the project() command for version 1.0.0
-project(Tutorial)
+project(Tutorial VERSION 1.0.0)
 
 option(TUTORIAL_BUILD_UTILITIES "Build the Tutorial executable" ON)
 option(TUTORIAL_USE_STD_SQRT "Use std::sqrt" OFF)
@@ -22,6 +22,7 @@ endif()
 if(TUTORIAL_BUILD_UTILITIES)
   add_subdirectory(Tutorial)
   # TODO1: Install the Tutorial target
+  install(TARGETS Tutorial EXPORT TutorialTargets)
 
   # TODO3: Add the Tutorial target to the TutorialTargets export
 endif()
@@ -34,25 +35,42 @@ endif()
 add_subdirectory(MathFunctions)
 
 # TODO4: Include the GNUInstallDirs module
+include(GNUInstallDirs)
 
 # TODO2: Install the MathFunctions, OpAdd, OpMul, OpSub, SqrtTable, and
-#        MathLogger targets. Ensure you name their header file set so the
-#        headers will be installed.
+# MathLogger targets. Ensure you name their header file set so the headers will
+# be installed.
+install(
+  TARGETS MathFunctions OpAdd OpMul OpSub SqrtTable MathLogger
+  EXPORT TutorialTargets
+  FILE_SET HEADERS)
 
 # TODO5: Add the targets from TODO2 to the TutorialTargets export
 
 # TODO6: Install the TutorialTargets export to:
-#          ${CMAKE_INSTALL_LIBDIR}/cmake/Tutorial
-#        And give them a namespace of "Tutorial::"
+# ${CMAKE_INSTALL_LIBDIR}/cmake/Tutorial And give them a namespace of
+# "Tutorial::"
+install(
+  EXPORT TutorialTargets
+  NAMESPACE Tutorial::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Tutorial)
 
 # TODO10: Include CMakePackageConfigHelpers
+include(CMakePackageConfigHelpers)
 
 # TODO11: Use write_basic_package_version_file to write a
-#         TutorialConfigVersion.cmake file to the CMAKE_CURRENT_BINARY_DIR.
-#         The version compatibility should be ExactVersion.
+# TutorialConfigVersion.cmake file to the CMAKE_CURRENT_BINARY_DIR. The version
+# compatibility should be ExactVersion.
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/TutorialConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY ExactVersion)
 
-# TODO12: Add the generated TutorialConfigVersion.cmake file to the file list
-#         of the TODO7 install() command.
+# TODO12: Add the generated TutorialConfigVersion.cmake file to the file list of
+# the TODO7 install() command.
 
 # TODO7: Install the config file at cmake/TutorialConfig.cmake to the same
-#        destination as the TutorialTargets export.
+# destination as the TutorialTargets export.
+install(FILES cmake/TutorialConfig.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/TutorialConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Tutorial)
